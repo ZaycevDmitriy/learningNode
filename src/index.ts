@@ -1,12 +1,12 @@
-setTimeout(() => {
+setImmediate(() => {
   console.log('Был диван,');
+});
+
+setTimeout(() => {
+  console.log('Выйди вон!');
 }, 100);
 
 setImmediate(() => {
-  console.log('Выйди вон!');
-});
-
-process.nextTick(() => {
   console.log('На диване');
 });
 
@@ -14,15 +14,15 @@ process.nextTick(() => {
   console.log('Чемодан,');
 });
 
-setImmediate(() => {
-  console.log('Кто не верит –');
-});
-
 setTimeout(() => {
-  console.log('Ехал слон.');
+  console.log('Кто не верит –');
 }, 10);
 
 setImmediate(() => {
+  console.log('Ехал слон.');
+});
+
+process.nextTick(() => {
   console.log('В чемодане');
 });
 
