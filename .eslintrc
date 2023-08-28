@@ -5,15 +5,25 @@
     "node": true
   },
   "parser": "@typescript-eslint/parser",
+  "root": true,
+  "overrides": [
+    {
+      "files": ["./**/*.js"],
+      "extends": [
+        "plugin:@typescript-eslint/disable-type-checked"
+      ]
+    }
+  ],
   "extends": [
     "eslint:recommended",
     "prettier",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended-type-checked"
   ],
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": "latest"
+    "ecmaVersion": "latest",
+    "project": true,
+    "tsconfigRootDir": "./tsconfig.json"
   },
   "globals": {
     "BigInt": true
