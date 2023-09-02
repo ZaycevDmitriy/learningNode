@@ -11,14 +11,32 @@ const mergingFiles = async (directoryPath: string, outputFileName: string) => {
 
     const arrayOfTextFiles = files.filter(file => isTxt(file));
 
-    for (const file of arrayOfTextFiles) {
-      const rStream = createReadStream(`${directoryPath}/${file}`);
+    const readFile = (file: string) =>
+      new Promise<void>((resolve, reject) => {
+        const rStream = createReadStream(`${directoryPath}/${file}`);
 
-      rStream.on('data', chunk => {
-        wStream.write(`[${file}]\n`, 'utf8');
-        wStream.write(chunk, 'utf8');
+        rStream.on('data', chunk => {
+          wStream.write(`[${file}]\n`, 'utf8', error => {
+            if (!error) {
+              wStream.write(chunk, 'utf8', error => {
+                if (!error) {
+                  resolve();
+                } else {
+                  reject(error);
+                  rStream.close();
+                }
+              });
+            } else {
+              reject(error);
+            }
+          });
+        });
       });
+
+    for (const file of arrayOfTextFiles) {
+      await readFile(file);
     }
+    wStream.close();
   } catch (e) {
     console.log('ERROR', e);
   }
