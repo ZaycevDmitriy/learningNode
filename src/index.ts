@@ -28,6 +28,7 @@ const mergingFiles = async (directoryPath: string, outputFileName: string) => {
               });
             } else {
               reject(error);
+              rStream.close();
             }
           });
         });
