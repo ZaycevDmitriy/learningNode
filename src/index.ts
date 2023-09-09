@@ -1,46 +1,24 @@
-import { createReadStream, createWriteStream } from 'node:fs';
-import { readdir } from 'node:fs/promises';
-import { extname } from 'node:path';
+import { mkdir, readdir } from 'node:fs/promises';
+import isImage from './isImage.js';
+import sharp from 'sharp';
 
-const isTxt = (pathFile: string): boolean => extname(pathFile) === '.txt';
-
-const mergingFiles = async (directoryPath: string, outputFileName: string) => {
+const mergingFiles = async (directoryPath: string, outputDir: string) => {
   try {
-    const wStream = createWriteStream(outputFileName);
     const files = await readdir(directoryPath);
+    await mkdir(outputDir, { recursive: true });
 
-    const arrayOfTextFiles = files.filter(file => isTxt(file));
+    const arrayOfImageFiles = files.filter(img => isImage(img));
 
-    const readFile = (file: string) =>
-      new Promise<void>((resolve, reject) => {
-        const rStream = createReadStream(`${directoryPath}/${file}`);
-
-        rStream.on('data', chunk => {
-          wStream.write(`[${file}]\n`, 'utf8', error => {
-            if (!error) {
-              wStream.write(chunk, 'utf8', error => {
-                if (!error) {
-                  resolve();
-                } else {
-                  reject(error);
-                  rStream.close();
-                }
-              });
-            } else {
-              reject(error);
-              rStream.close();
-            }
-          });
-        });
-      });
-
-    for (const file of arrayOfTextFiles) {
-      await readFile(file);
+    for (const file of arrayOfImageFiles) {
+      await sharp(`${directoryPath}/${file}`)
+        .resize(300)
+        .grayscale(true)
+        .blur()
+        .toFile(`${outputDir}/${file}`);
     }
-    wStream.close();
   } catch (e) {
     console.log('ERROR', e);
   }
 };
 
-await mergingFiles('./test', './write.txt');
+await mergingFiles('./test', './image');
