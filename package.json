@@ -1,8 +1,8 @@
 {
-  "name": "learningnode",
+  "name": "cli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "cli.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
