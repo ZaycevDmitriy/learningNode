@@ -1,38 +1,41 @@
-const argsParse = ([, , ...argv]: string[], words: string[] = []) => {
-  const args: Record<string, string | number | boolean> = {};
+import { IAppCommands } from './interface.js';
+import currentId from './currentId.js';
+import inputHelp from '../service/inputHelp.js';
+import inputListTodo from '../service/actionsToDo/inputListTodo.js';
+import addTask from '../service/actionsToDo/addTask.js';
+import deleteTask from '../service/actionsToDo/deleteTask.js';
+import updateTask from '../service/actionsToDo/updateTask.js';
+import getTask from '../service/actionsToDo/getTask.js';
+import updateStatus from '../service/actionsToDo/updateStatus.js';
 
-  for (const key of words) {
-    args[key] = argv[0] === key;
+type IArgsParse = [string, string, IAppCommands, string, string];
+
+const argsParse = async ([, , ...argv]: IArgsParse) => {
+  const [command, ...values] = argv;
+
+  switch (command) {
+    case 'add':
+      await addTask(values[0]);
+      break;
+    case 'delete':
+      await currentId(values[0], deleteTask);
+      break;
+    case 'update':
+      await currentId(values[0], updateTask, values[1]);
+      break;
+    case 'list':
+      await inputListTodo();
+      break;
+    case 'get':
+      await currentId(values[0], getTask);
+      break;
+    case 'status':
+      await currentId(values[0], updateStatus, values[1]);
+      break;
+    case 'help':
+    default:
+      inputHelp();
   }
-
-  for (let i = 0; i < argv.length; i++) {
-    if (argv[i][0] !== '-') continue;
-
-    if (argv[i + 1] && argv[i + 1][0] !== '-') {
-      if (argv[i][1] === '-') {
-        args[argv[i].substring(2)] = argv[i + 1];
-      } else {
-        args[argv[i].substring(1)] = argv[i + 1];
-      }
-      continue;
-    }
-    if (argv[i].startsWith('--')) {
-      if (argv[i].includes('=')) {
-        const [key, value] = argv[i].substring(2).split('=');
-        args[key] = value;
-      } else {
-        args[argv[i].substring(2)] = true;
-      }
-      continue;
-    }
-    if (argv[i].startsWith('-no-')) {
-      args[argv[i].substring(4)] = false;
-      continue;
-    }
-    args[argv[i].substring(1)] = true;
-  }
-
-  return args;
 };
 
 export default argsParse;

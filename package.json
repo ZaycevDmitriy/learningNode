@@ -2,7 +2,7 @@
   "name": "cli",
   "version": "1.0.0",
   "description": "",
-  "main": "cli.js",
+  "main": "todo.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
