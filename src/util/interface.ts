@@ -7,12 +7,3 @@ export interface ITask {
 export interface IData {
   todo: ITask[];
 }
-
-export type IAppCommands =
-  | 'add'
-  | 'get'
-  | 'update'
-  | 'status'
-  | 'delete'
-  | 'list'
-  | 'help';

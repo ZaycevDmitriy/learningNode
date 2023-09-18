@@ -1,4 +1,3 @@
-import { IAppCommands } from './interface.js';
 import currentId from './currentId.js';
 import inputHelp from '../service/inputHelp.js';
 import inputListTodo from '../service/actionsToDo/inputListTodo.js';
@@ -8,7 +7,7 @@ import updateTask from '../service/actionsToDo/updateTask.js';
 import getTask from '../service/actionsToDo/getTask.js';
 import updateStatus from '../service/actionsToDo/updateStatus.js';
 
-type IArgsParse = [string, string, IAppCommands, string, string];
+type IArgsParse = string[];
 
 const argsParse = async ([, , ...argv]: IArgsParse) => {
   const [command, ...values] = argv;
